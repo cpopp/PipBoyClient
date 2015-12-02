@@ -31,3 +31,21 @@ command, but for now this client just uses 1 for each command which seems to be 
 A rough example of the above can be seen in the Session class:
 
     sendFalloutControl(new RadioToggle(RadioStation.DiamondCityRadio), os);
+
+The Driver class shows how one might use the discovery functionality to find the first available Fallout 4 app and then establish a session to it with the session class to periodically execute some behavior.  It's all very much a prototype to show what is possible at the barebones level.
+
+	public static void main(String[] args) throws IOException {
+		System.out.println("Discovering hosts...");
+		List<DiscoverResponse> responses = Discovery.discover();
+		System.out.println("Discovery complete");
+		System.out.println();
+		
+		for(DiscoverResponse response : responses) {
+			if(response.isBusy()) {
+				System.out.println("Skipping busy host: " + response);
+			} else {
+				System.out.println("Connecting to available host: " + response);
+				Session.connect(response.getMachineAddress());
+			}
+		}
+	}
